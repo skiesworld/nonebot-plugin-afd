@@ -1,4 +1,6 @@
 from nonebot import get_driver
+from nonebot.plugin import PluginMetadata
+
 from .config import Config
 
 __plugin_meta__ = PluginMetadata(
@@ -8,9 +10,9 @@ __plugin_meta__ = PluginMetadata(
     type="application",
     homepage="https://github.com/17TheWord/nonebot-plugin-afd",
     config=Config,
-    supported_adapters=[
+    supported_adapters={
       "nonebot.adapters.onebot.v11"
-    ]
+    }
 )
 
 config = Config.parse_obj(get_driver().config)
