@@ -1,57 +1,77 @@
-import hashlib
-import json
-import time
-from typing import Union
-
-import httpx
-from nonebot import on_request
+import nonebot
+from nonebot import on_request, CommandSession
 from nonebot.adapters.onebot.v11 import Bot
 from nonebot.adapters.onebot.v11.event import GroupRequestEvent
 
-from . import config
+# 全局黑名单
+global_blacklist = set()
+
+# 分群黑名单，键为群组ID，值为黑名单用户集合
+group_blacklist = {}
 
 new_member = on_request()
+
+# 添加至分群黑名单命令
+@nonebot.on_command("添加黑名单", aliases=("add_blacklist",), only_to_me=False)
+async def add_blacklist(session: CommandSession):
+    user_id = session.event.user_id
+    group_id = session.event.group_id
+
+    # 检查命令参数
+    member_ids = session.get("member_ids", prompt="请输入要添加到黑名单的成员ID，多个成员用空格隔开")
+
+    # 将成员添加至分群黑名单
+    if group_id not in group_blacklist:
+        group_blacklist[group_id] = set()
+    group_blacklist[group_id].update(member_ids)
+
+    await session.send(f"已将成员 {', '.join(member_ids)} 添加至群组 {group_id} 的黑名单。")
+
+
+@add_blacklist.args_parser
+async def _(session: CommandSession):
+    stripped_text = session.current_arg_text.strip()
+    if stripped_text:
+        # 从用户输入中获取要添加至黑名单的成员ID
+        session.state["member_ids"] = stripped_text.split()
+
+
+# 添加至全局黑名单命令
+@nonebot.on_command("添加全局黑名单", aliases=("add_global_blacklist",), only_to_me=False)
+async def add_global_blacklist(session: CommandSession):
+    user_id = session.event.user_id
+
+    # 检查命令参数
+    member_ids = session.get("member_ids", prompt="请输入要添加到全局黑名单的成员ID，多个成员用空格隔开")
+
+    # 将成员添加至全局黑名单
+    global_blacklist.update(member_ids)
+
+    await session.send(f"已将成员 {', '.join(member_ids)} 添加至全局黑名单。")
+
+
+@add_global_blacklist.args_parser
+async def _(session: CommandSession):
+    stripped_text = session.current_arg_text.strip()
+    if stripped_text:
+        # 从用户输入中获取要添加至全局黑名单的成员ID
+        session.state["member_ids"] = stripped_text.split()
 
 
 @new_member.handle()
 async def _(bot: Bot, event: GroupRequestEvent):
-    comment = event.comment
-    if event.sub_type == "add" and comment:
-        if "\n答案：" in comment:
-            comment = comment[comment.find("\n答案：") + 4:]
+    user_id = event.user_id
+    group_id = event.group_id
 
-        if order_event := await call_order_api(event.group_id, comment):
-            try:
-                if order_event["data"]["list"]:
-                    await event.approve(bot)
-            except KeyError:
-                pass
+    # 检查全局黑名单
+    if user_id in global_blacklist:
+        await event.reject(bot, reason="你在全局黑名单中，无法加入任何群组。")
+        return
 
+    # 检查分群黑名单
+    if group_id in group_blacklist and user_id in group_blacklist[group_id]:
+        await event.reject(bot, reason="你在本群的黑名单中，无法加入。")
+        return
 
-async def call_order_api(group_id: Union[str, int], order_id: str):
-    """爱发电 订单查询 API"""
-    if not config.afd_token_list:
-        return None
-    try:
-        user_id = config.afd_token_list[str(group_id)]["user_id"]
-        token = config.afd_token_list[str(group_id)]["token"]
-    except KeyError:
-        return None
-    params_json = json.dumps({"out_trade_no": order_id})
-    ts = int(time.time())
-    """当前时间戳"""
-
-    sign_str = f"{token}params{params_json}ts{ts}user_id{user_id}"
-    sign = hashlib.md5(sign_str.encode("utf-8")).hexdigest()
-
-    async with httpx.AsyncClient() as client:
-        data = await client.get(
-            url="https://afdian.net/api/open/query-order",
-            params={
-                "user_id": user_id,
-                "params": params_json,
-                "ts": ts,
-                "sign": sign
-            }
-        )
-    return data.json()
+    # 如果不在黑名单中，同意加群请求
+    await event.approve(bot)
