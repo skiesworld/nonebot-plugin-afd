@@ -1,0 +1,46 @@
+[project]
+name = "nonebot-plugin-afd"
+version = "0.1.0"
+description = "nonebot-plugin-afd"
+readme = "README.md"
+requires-python = ">=3.8, <4.0"
+
+[tool.nonebot]
+adapters = [
+    { name = "Afdian", module_name = "nonebot.adapters.afdian" },
+    { name = "OneBot V11", module_name = "nonebot.adapters.onebot.v11" }
+]
+plugins = ["nonebot_plugin_afd"]
+plugin_dirs = []
+builtin_plugins = []
+
+[tool.poetry]
+name = "nonebot-plugin-afd"
+version = "0.0.5"
+description = "基于NoneBot2的爱发电订单审核进群插件"
+authors = ["17TheWord <17theword@gmail.com>"]
+license = "MIT"
+readme = "README.md"
+packages = [{ include = "nonebot_plugin_afd" }]
+
+[tool.poetry.dependencies]
+python = "^3.10"
+nonebot-adapter-onebot = "^2.4.4"
+nonebot-adapter-afdian = "^0.0.1"
+nonebot2 = { version = "^2.3.3", extras = ["fastapi", "httpx"] }
+
+[tool.poetry.group.dev.dependencies]
+ruff = "^0.5.0"
+isort = "^5.10.1"
+nb-cli = "^1.4.2"
+
+[tool.ruff]
+line-length = 88
+target-version = "py39"
+
+[tool.ruff.lint.per-file-ignores]
+"nonebot_plugin_afd/__init__.py" = ["E401", "E402", "F401", "F402"]
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
