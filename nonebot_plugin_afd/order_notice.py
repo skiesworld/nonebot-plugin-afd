@@ -9,11 +9,11 @@ def afdian_rule(event: OrderNotifyEvent) -> bool:
     return event.get_user_id() in set(config.afd_token_dict.values())
 
 
-order_handler = on_notice()
+order_handler = on_notice(rule=afdian_rule)
 
 
 @order_handler.handle()
-async def _(bot: Bot, event: OrderNotifyEvent):
+async def handle_afdian_order(bot: Bot, event: OrderNotifyEvent):
     notice_text = (
         f"作者：{bot.bot_info.user_id[:5]}{'*' * 5} 有新的订单\n"
         f"{'=' * 15}\n"
