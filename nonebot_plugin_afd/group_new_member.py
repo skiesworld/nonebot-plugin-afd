@@ -68,8 +68,8 @@ async def _(bot: Bot, event: GroupRequestEvent):
             logger.debug(f"查询用户 {event.user_id} 的订单 {comment} 成功")
 
             if not order.data.list:
-                logger.debug(f"用户 {event.user_id} 的订单号 {comment} 存在，但数据列表为空，将消息公布至群内")
                 msg = f"检测到用户 {event.user_id} 的订单号已存在，但数据列表为空，忽略次事件，需要作者 {user_id[:5]}{'x' * 8} 自行处理"
+                logger.debug(msg)
                 await bot.send_group_msg(group_id=event.group_id, message=msg)
                 logger.debug(f"已将用户 {event.user_id} 通知发送至群聊 {event.group_id}")
                 raise FinishedException
@@ -81,5 +81,7 @@ async def _(bot: Bot, event: GroupRequestEvent):
             logger.debug(f"用户 {event.user_id}，使用订单号 {comment}，加入群聊 {event.group_id}")
             raise FinishedException
     else:
-        logger.error(f"用户 {event.user_id} 的订单号不属于群聊 {event.group_id} 的任何作者，将忽略")
+        msg = f"用户 {event.user_id} 的订单号不属于群聊 {event.group_id} 的任何作者，将忽略"
+        logger.error(msg)
+        await bot.send_group_msg(group_id=event.group_id, message=msg)
         raise FinishedException
