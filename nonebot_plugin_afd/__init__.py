@@ -18,4 +18,4 @@ __plugin_meta__ = PluginMetadata(
 
 config = get_plugin_config(Config)
 
-from . import group_new_member
+from . import group_new_member, order_notice

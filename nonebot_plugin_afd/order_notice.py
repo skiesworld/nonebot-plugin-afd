@@ -1,4 +1,4 @@
-from nonebot import on_notice, logger
+from nonebot import logger, on_notice
 from nonebot.adapters.afdian import Bot, OrderNotifyEvent
 from nonebot.exception import FinishedException
 
