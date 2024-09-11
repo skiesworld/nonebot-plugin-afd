@@ -74,17 +74,17 @@ async def _(bot: Bot, event: GroupRequestEvent):
                 logger.debug(f"已将用户 {event.user_id} 通知发送至群聊 {event.group_id}")
                 raise FinishedException
 
-            for order in order_response.data.list:
-                if order.out_trade_no == comment:
-                    delay = random.uniform(3, 5)
-                    logger.debug(f"用户 {event.user_id} 的订单号 {comment} 数据列表不为空，将在 {delay} 秒后同意请求")
-                    await asyncio.sleep(delay)
-                    await event.approve(bot)
-                    logger.debug(f"用户 {event.user_id}，使用订单号 {comment}，加入群聊 {event.group_id}")
-                    raise FinishedException
+            delay = random.uniform(3, 5)
+            logger.debug(
+                f"用户 {event.user_id} 的订单号 {comment} 数据列表不为空，将在 {delay:.2f} 秒后同意请求"
+            )
+            await asyncio.sleep(delay)
+            await event.approve(bot)
+            logger.debug(f"用户 {event.user_id}，使用订单号 {comment}，加入群聊 {event.group_id}")
+            raise FinishedException
 
     else:
         msg = f"用户 {event.user_id} 的订单号不属于群聊 {event.group_id} 的任何作者，将忽略"
-        logger.error(msg)
+        logger.warning(msg)
         await bot.send_group_msg(group_id=event.group_id, message=msg)
         raise FinishedException

@@ -9,7 +9,7 @@ builtin_plugins = []
 
 [tool.poetry]
 name = "nonebot-plugin-afd"
-version = "0.0.7"
+version = "0.0.8"
 description = "基于NoneBot2的爱发电订单审核进群插件"
 authors = ["17TheWord <17theword@gmail.com>"]
 license = "MIT"
@@ -19,7 +19,7 @@ packages = [{ include = "nonebot_plugin_afd" }]
 [tool.poetry.dependencies]
 python = "^3.10"
 nonebot-adapter-onebot = "^2.4.4"
-nonebot-adapter-afdian = "^0.0.1"
+nonebot-adapter-afdian = "^0.0.6"
 nonebot2 = { version = "^2.3.3", extras = ["fastapi", "httpx"] }
 
 [tool.poetry.group.dev.dependencies]
@@ -29,7 +29,7 @@ nb-cli = "^1.4.2"
 
 [tool.ruff]
 line-length = 88
-target-version = "py39"
+target-version = "py310"
 
 [tool.ruff.lint.per-file-ignores]
 "nonebot_plugin_afd/__init__.py" = ["E401", "E402", "F401", "F402"]
