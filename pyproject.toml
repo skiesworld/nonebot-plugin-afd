@@ -9,7 +9,7 @@ builtin_plugins = []
 
 [tool.poetry]
 name = "nonebot-plugin-afd"
-version = "0.0.7"
+version = "0.0.8"
 description = "基于NoneBot2的爱发电订单审核进群插件"
 authors = ["17TheWord <17theword@gmail.com>"]
 license = "MIT"
