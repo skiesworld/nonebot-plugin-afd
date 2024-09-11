@@ -92,6 +92,6 @@ async def _(bot: Bot, event: GroupRequestEvent):
 
     else:
         msg = f"用户 {event.user_id} 的订单号不属于群聊 {event.group_id} 的任何作者，将忽略"
-        logger.error(msg)
+        logger.warning(msg)
         await bot.send_group_msg(group_id=event.group_id, message=msg)
         raise FinishedException
