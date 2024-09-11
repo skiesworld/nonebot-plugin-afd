@@ -28,22 +28,29 @@ async def _(bot: Bot, event: GroupRequestEvent):
     logger.debug(f"用户 {event.user_id} 请求加入群聊 {event.group_id}")
     comment = event.comment
     if not comment:
-        logger.debug(f"用户 {event.user_id} 未填写答案，将忽略")
+        logger.debug(f"用户 {event.user_id} 未填写答案，已忽略")
+        raise FinishedException
+
+    comment = comment.strip()
+
+    if not comment.isdigit():
+        await event.reject(bot, reason="答案不符合纯数字订单号的格式")
+        logger.debug(f"用户 {event.user_id} 的答案不符合纯订单号的格式，已拒绝")
         raise FinishedException
 
     if event.sub_type != "add":
-        logger.debug(f"用户 {event.user_id} 的请求类型为 {event.sub_type}，将忽略")
+        logger.debug(f"用户 {event.user_id} 的请求类型为 {event.sub_type}，已忽略")
         raise FinishedException
 
     if "\n答案：" not in comment:
-        logger.debug(f"用户 {event.user_id} 的答案不符合自定义答案格式，将忽略")
+        logger.debug(f"用户 {event.user_id} 的答案不符合自定义答案格式，已忽略")
         raise FinishedException
 
     comment = comment[comment.find("\n答案：") + 4:]
     logger.debug(f"用户 {event.user_id} 的订单号为 {comment}")
 
     if not (author_user_id_list := config.afd_token_dict.get(event.group_id)):
-        logger.error(f"未找到群聊 {event.group_id} 的作者 user_id 配置，将忽略")
+        logger.warning(f"未找到群聊 {event.group_id} 的作者 user_id 配置，已忽略")
         raise FinishedException
 
     # 遍历本群所有作者的user_id
@@ -63,7 +70,7 @@ async def _(bot: Bot, event: GroupRequestEvent):
 
             if order_response.ec != 200:
                 logger.error(f"查询用户 {event.user_id} 的订单 {comment} 失败，错误信息为：{order_response.em}")
-                logger.debug("将尝试使用下一个作者的 user_id 进行查询")
+                logger.debug("已尝试使用下一个作者的 user_id 进行查询")
                 continue
             logger.debug(f"查询用户 {event.user_id} 的订单 {comment} 成功")
 
@@ -75,16 +82,16 @@ async def _(bot: Bot, event: GroupRequestEvent):
                 raise FinishedException
 
             delay = random.uniform(3, 5)
-            logger.debug(
-                f"用户 {event.user_id} 的订单号 {comment} 数据列表不为空，将在 {delay:.2f} 秒后同意请求"
-            )
+            logger.debug(f"用户 {event.user_id} 的订单号 {comment} 数据列表不为空，将在 {delay:.2f} 秒后同意请求")
             await asyncio.sleep(delay)
             await event.approve(bot)
             logger.debug(f"用户 {event.user_id}，使用订单号 {comment}，加入群聊 {event.group_id}")
             raise FinishedException
 
+
     else:
-        msg = f"用户 {event.user_id} 的订单号不属于群聊 {event.group_id} 的任何作者，将忽略"
-        logger.warning(msg)
+        msg = f"用户 {event.user_id} 的订单号 {comment[:5]} 不属于群聊 {event.group_id} 的任何作者，已拒绝请求"
         await bot.send_group_msg(group_id=event.group_id, message=msg)
+        await event.reject(bot, reason="订单号不属于群聊的作者")
+        logger.warning(msg)
         raise FinishedException
