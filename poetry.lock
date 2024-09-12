@@ -826,13 +826,13 @@ wcwidth = ">=0.2,<1.0"
 
 [[package]]
 name = "nonebot-adapter-afdian"
-version = "0.0.6"
+version = "0.0.7"
 description = "爱发电适配器"
 optional = false
 python-versions = "<4.0,>=3.10"
 files = [
-    {file = "nonebot_adapter_afdian-0.0.6-py3-none-any.whl", hash = "sha256:3139f5bdf96382c8a9539734403368d7cf7cdb160fb15d986896fa6039ad3713"},
-    {file = "nonebot_adapter_afdian-0.0.6.tar.gz", hash = "sha256:55cc726f5d092ee1cbd06c0d7f8276fa6580711efac8b77f25909d3324d48fb8"},
+    {file = "nonebot_adapter_afdian-0.0.7-py3-none-any.whl", hash = "sha256:bcba0188dbdbaca4649cc3f61849e43fd97cc45a40f025cbadc3b81285a983dc"},
+    {file = "nonebot_adapter_afdian-0.0.7.tar.gz", hash = "sha256:129525401848fe62ff4d8c24a59da3e89edba60cb3155c9ced0d97a00d0c3b0c"},
 ]
 
 [package.dependencies]
@@ -1360,13 +1360,13 @@ files = [
 
 [[package]]
 name = "urllib3"
-version = "2.2.2"
+version = "2.2.3"
 description = "HTTP library with thread-safe connection pooling, file post, and more."
 optional = false
 python-versions = ">=3.8"
 files = [
-    {file = "urllib3-2.2.2-py3-none-any.whl", hash = "sha256:a448b2f64d686155468037e1ace9f2d2199776e17f0a46610480d311f73e3472"},
-    {file = "urllib3-2.2.2.tar.gz", hash = "sha256:dd505485549a7a552833da5e6063639d0d177c04f23bc3864e41e5dc5f612168"},
+    {file = "urllib3-2.2.3-py3-none-any.whl", hash = "sha256:ca899ca043dcb1bafa3e262d73aa25c465bfb49e0bd9dd5d59f1d0acba2f8fac"},
+    {file = "urllib3-2.2.3.tar.gz", hash = "sha256:e7d814a81dad81e6caf2ec9fdedb284ecc9c73076b62654547cc64ccdcae26e9"},
 ]
 
 [package.extras]
@@ -1788,4 +1788,4 @@ multidict = ">=4.0"
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.10"
-content-hash = "2aa01ad6801da5c18a462df1c64f368eef36031aadfa5bef31ef160f3e6f277f"
+content-hash = "99cfb8978e24131d9747b51f7499d915b6d0436987d2300cbf44fa2cde05d0f7"
