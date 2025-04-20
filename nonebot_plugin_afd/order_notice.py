@@ -1,19 +1,24 @@
-from nonebot import logger, on_notice
+from nonebot import logger, on_notice, get_bots
 from nonebot.adapters.afdian import Bot, OrderNotifyEvent
-from nonebot.exception import FinishedException
+from nonebot.adapters.onebot.v11 import Bot as OneBot
 
 from . import config
 
 
-def afdian_rule(event: OrderNotifyEvent) -> bool:
-    return event.get_user_id() in set(config.afd_token_dict.values())
+def afdian_rule(bot: Bot) -> bool:
+    for user_ids in config.afd_token_dict.values():
+        if bot.self_id in user_ids:
+            return True
+    return False
 
 
-order_handler = on_notice(rule=afdian_rule)
+order_handler = on_notice()
 
 
 @order_handler.handle()
 async def handle_afdian_order(bot: Bot, event: OrderNotifyEvent):
+    logger.info(f"[爱发电 | 通知]有新的订单 {event.get_order().out_trade_no} 来自用户 {event.get_user_id()}")
+
     notice_text = (
         f"作者：{bot.bot_info.user_id[:5]}{'*' * 5} 有新的订单\n"
         f"{'=' * 15}\n"
@@ -31,8 +36,11 @@ async def handle_afdian_order(bot: Bot, event: OrderNotifyEvent):
 
     logger.info(notice_text)
 
+    logger.info("正在寻找可用Bot")
     for group_id, user_id in config.afd_token_dict.items():
-        if bot.bot_info.user_id == user_id:
-            await bot.send_group_msg(group_id=group_id, message=notice_text)
-            logger.info(f"已向群 {group_id} 发送本订单的通知")
-    raise FinishedException
+        if bot.self_id in user_id:
+            for qqbot in get_bots().values():
+                logger.info(f"找到群聊 {group_id} 的Bot {qqbot.self_id}")
+                if isinstance(qqbot, OneBot):
+                    await qqbot.send_group_msg(group_id=group_id, message=notice_text)
+                    logger.info(f"已向群 {group_id} 发送本订单的通知")
