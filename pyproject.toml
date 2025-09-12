@@ -1,40 +1,101 @@
+[project]
+name = "nonebot-plugin-afd"
+version = "0.1.0"
+description = "基于NoneBot2的爱发电订单审核进群插件"
+authors = [{ name = "17TheWord", email = "17theword@gmail.com" }]
+requires-python = ">=3.10, <4"
+readme = "README.md"
+license = "MIT"
+dependencies = [
+    "nonebot-adapter-onebot>=2.4.4,<3",
+    "nonebot-adapter-afdian>=0.1.5,<0.2",
+    "nonebot2[fastapi, httpx]>=2.3.3,<3",
+]
+
+[dependency-groups]
+dev = ["nb-cli>=1.4.2,<2"]
+
+test = [
+    "nonebug>=0.4.3,<0.5",
+    "pytest>=8.4.2",
+    "pytest-cov>=6.2.1,<7",
+    "pytest-asyncio>=1.1.0,<2",
+]
+
+lint = ["ruff>=0.12.4,<0.13", "pre-commit>=3.8.0,<4"]
+
 [tool.nonebot]
 adapters = [
     { name = "Afdian", module_name = "nonebot.adapters.afdian" },
-    { name = "OneBot V11", module_name = "nonebot.adapters.onebot.v11" }
+    { name = "OneBot V11", module_name = "nonebot.adapters.onebot.v11" },
 ]
 plugins = ["nonebot_plugin_afd"]
 plugin_dirs = []
 builtin_plugins = []
 
-[tool.poetry]
-name = "nonebot-plugin-afd"
-version = "0.1.0"
-description = "基于NoneBot2的爱发电订单审核进群插件"
-authors = ["17TheWord <17theword@gmail.com>"]
-license = "MIT"
-readme = "README.md"
-packages = [{ include = "nonebot_plugin_afd" }]
+[tool.uv]
+default-groups = ["dev", "test", "lint"]
 
-[tool.poetry.dependencies]
-python = "^3.10"
-nonebot-adapter-onebot = "^2.4.4"
-nonebot-adapter-afdian = "^0.1.1"
-nonebot2 = { version = "^2.3.3", extras = ["fastapi", "httpx"] }
+[tool.hatch.build.targets.sdist]
+include = ["nonebot_plugin_afd"]
 
-[tool.poetry.group.dev.dependencies]
-ruff = "^0.5.0"
-isort = "^5.10.1"
-nb-cli = "^1.4.2"
-pre-commit = "^3.8.0"
+[tool.hatch.build.targets.wheel]
+include = ["nonebot_plugin_afd"]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.pytest.ini_options]
+asyncio_mode = "auto"
+asyncio_default_fixture_loop_scope = "session"
+addopts = "--cov=nonebot_plugin_afd --cov-report term-missing"
 
 [tool.ruff]
 line-length = 88
 target-version = "py310"
 
-[tool.ruff.lint.per-file-ignores]
-"nonebot_plugin_afd/__init__.py" = ["E401", "E402", "F401", "F402"]
+[tool.ruff.lint]
+select = [
+    "F",     # Pyflakes
+    "W",     # pycodestyle warnings
+    "E",     # pycodestyle errors
+    "I",     # isort
+    "UP",    # pyupgrade
+    "ASYNC", # flake8-async
+    "C4",    # flake8-comprehensions
+    "T10",   # flake8-debugger
+    "T20",   # flake8-print
+    "PYI",   # flake8-pyi
+    "PT",    # flake8-pytest-style
+    "Q",     # flake8-quotes
+    "RUF",   # Ruff-specific rules
+]
+ignore = [
+    "E402",
+    "E501",   # module-import-not-at-top-of-file
+    "UP037",  # quoted-annotation
+    "RUF001", # ambiguous-unicode-character-string
+    "RUF002", # ambiguous-unicode-character-docstring
+    "RUF003", # ambiguous-unicode-character-comment
+]
 
-[build-system]
-requires = ["poetry-core"]
-build-backend = "poetry.core.masonry.api"
+[tool.ruff.format]
+quote-style = "double"
+indent-style = "space"
+skip-magic-trailing-comma = false
+line-ending = "auto"
+
+[tool.ruff.lint.pyupgrade]
+keep-runtime-typing = true
+
+[tool.ruff.lint.isort]
+force-sort-within-sections = true
+extra-standard-library = ["typing_extensions"]
+
+[tool.ruff.lint.flake8-pytest-style]
+fixture-parentheses = false
+mark-parentheses = false
+
+[tool.data.packages]
+my_package = { path = "nonebot_plugin_afd" }
