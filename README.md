@@ -5,18 +5,20 @@
 ## 安装
 
 - 适配器
-    - [`nonebot-adapter-onebot`](https://github.com/nonebot/adapter-onebot)
-    - [`nonebot-adapter-afdian`](https://github.com/MineGraphCN/nonebot-adapter-afdian)
+  - [`nonebot-adapter-onebot`](https://github.com/nonebot/adapter-onebot)
+  - [`nonebot-adapter-afdian`](https://github.com/MineGraphCN/nonebot-adapter-afdian)
 
 - NoneBot2 插件商店安装
+
   ```shell
   nb plugin install nonebot-plugin-afd
   ```
+
   启动 `NoneBot2` 项目：`nb run`
 
 ## 配置
 
-```
+```dotenv
 # 插件配置
 afd_token_dict = '{
     "群号": ["作者1user_id", "作者2user_id"]
@@ -26,7 +28,7 @@ afd_token_dict = '{
 afdian_bots='[
     {
         "user_id": "爱发电开发者页面user_id",
-        "api_token": "爱发电开发者页面api_token"
+        "token": "爱发电开发者页面token"
     }
 ]'
 ```
@@ -38,7 +40,7 @@ afdian_bots='[
 3. 用户加群，**仅需**填写 `订单号` 即可（**不要填入其他任何字符**）
 4. 有新的订单时，`Bot` 会自动推送至对应群聊
 
-# 特别感谢
+## 特别感谢
 
 - [NoneBot2](https://github.com/nonebot/nonebot2)：开发框架。
 
@@ -52,4 +54,3 @@ afdian_bots='[
 ## 开源许可
 
 本项目使用 [MIT](./LICENSE) 作为开源许可证。
-
