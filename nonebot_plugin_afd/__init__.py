@@ -1,4 +1,3 @@
-from nonebot import get_plugin_config
 from nonebot.plugin import PluginMetadata
 
 from .config import Config
@@ -10,12 +9,13 @@ __plugin_meta__ = PluginMetadata(
     type="application",
     homepage="https://github.com/17TheWord/nonebot-plugin-afd",
     config=Config,
-    supported_adapters={
-        "nonebot.adapters.onebot.v11",
-        "nonebot.adapters.afdian"
-    }
+    supported_adapters={"nonebot.adapters.onebot.v11", "nonebot.adapters.afdian"},
 )
 
-config = get_plugin_config(Config)
+from . import group_new_member as group_new_member
+from . import order_notice as order_notice
 
-from . import group_new_member, order_notice
+# 初始化全局作者与群关系数据
+from .utils import init_global_data
+
+init_global_data()
