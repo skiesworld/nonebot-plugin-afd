@@ -782,15 +782,15 @@ wheels = [
 
 [[package]]
 name = "nonebot-adapter-afdian"
-version = "0.1.5"
+version = "0.1.8"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "nonebot2", extra = ["fastapi", "httpx"] },
     { name = "pydantic" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/b2/02/80bc705e797996090857d6bd1e98c3983036b1ed967bc7a63711e4f12eeb/nonebot_adapter_afdian-0.1.5.tar.gz", hash = "sha256:d84ae9b93340f85111282c35ce62b27314127745bfdfcf588a2cf850abeded5f", size = 10944, upload-time = "2025-09-12T10:36:10.025Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/95/81/4b35738d10865afad0c7116de493d9c024593820027123e4a414d12bfe69/nonebot_adapter_afdian-0.1.8.tar.gz", hash = "sha256:0180b1eaaf71291781cd38a59ced163850a71b416b926fb3338516bc0053fd7d", size = 11448, upload-time = "2025-10-02T04:12:12.014Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/00/cb/d9b6c27c871f54e29f2295364c37d2830688aa465005e42abf1cf662a3fe/nonebot_adapter_afdian-0.1.5-py3-none-any.whl", hash = "sha256:04d8b9d8d0d1c007c18a677cfd50f21e842b86add39a58163b0f5bac3cbd72d4", size = 12176, upload-time = "2025-09-12T10:36:09.276Z" },
+    { url = "https://files.pythonhosted.org/packages/df/db/97a2eda486191a429f3e79094b55ce027099d934162a33353271f6ad1d82/nonebot_adapter_afdian-0.1.8-py3-none-any.whl", hash = "sha256:ae0372049ec209ffc531ec923d8c1b3a8d23f966aafe97a2d24485bd02d51fa8", size = 12809, upload-time = "2025-10-02T04:12:10.836Z" },
 ]
 
 [[package]]
@@ -810,7 +810,7 @@ wheels = [
 
 [[package]]
 name = "nonebot-plugin-afd"
-version = "0.1.0"
+version = "0.1.1"
 source = { editable = "." }
 dependencies = [
     { name = "nonebot-adapter-afdian" },
@@ -835,7 +835,7 @@ test = [
 
 [package.metadata]
 requires-dist = [
-    { name = "nonebot-adapter-afdian", specifier = ">=0.1.5,<0.2" },
+    { name = "nonebot-adapter-afdian", specifier = ">=0.1.8,<0.2" },
     { name = "nonebot-adapter-onebot", specifier = ">=2.4.4,<3" },
     { name = "nonebot2", extras = ["fastapi", "httpx"], specifier = ">=2.3.3,<3" },
 ]

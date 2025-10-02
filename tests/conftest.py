@@ -10,13 +10,7 @@ def pytest_configure(config: pytest.Config):
     config.stash[NONEBOT_INIT_KWARGS] = {
         "driver": "~fastapi+~httpx",
         "log_level": "DEBUG",
-        "afd_token_dict": {"222222222": ["85ee9c02255d11eb9d0852540025c377"]},
-        "afdian_bots": [
-            {
-                "user_id": "85ee9c02255d11eb9d0852540025c377",
-                "api_token": "uJDba6meqP8wsGhtYU5v4CgHRXExj3kW",
-            }
-        ],
+        "afd_token_dict": {222222222: ["85ee9c02255d11eb9d0852540025c377"]},
     }
 
 

@@ -28,6 +28,8 @@ def init_global_data():
 
 def get_description(author_id: str, event: OrderNotifyEvent) -> str:
     notice_text = (
+        "[爱发电 | 订单通知]\n"
+        f"{'=' * 15}\n"
         f"作者：{author_id[:5]}{'*' * 5} 有新的订单\n"
         f"{'=' * 15}\n"
         f"用户ID：{event.get_user_id()[:5]}{'*' * 5}\n"

@@ -3,8 +3,8 @@ import random
 
 import nonebot
 from nonebot import get_bot, logger, on_request
-from nonebot.adapters.afdian import Bot as AFDianBot
-from nonebot.adapters.afdian.payload import OrderResponse
+from nonebot.adapters.afdian import TokenBot
+from nonebot.adapters.afdian.exception import ActionFailed
 from nonebot.adapters.onebot.v11 import Bot
 from nonebot.adapters.onebot.v11.event import GroupRequestEvent
 
@@ -52,16 +52,23 @@ async def _(bot: Bot, event: GroupRequestEvent):
     logger.info(nonebot.get_bots())
 
     # 遍历本群所有作者的user_id
+    logger.debug(
+        f"开始遍历群聊 {event.group_id} 的作者 user_id 列表 {author_user_id_list}"
+    )
+
     for user_id in author_user_id_list:
         logger.info(f"正在尝试获取作者 {user_id} 的 Bot")
         try:
             afdian_bot = get_bot(user_id)
             logger.info("获取 Bot 成功")
         except Exception:
-            logger.warning(f"群聊 {event.group_id} 的Bot不存在，将尝试获取下一个Bot")
+            logger.warning(
+                f"群聊 {event.group_id} 的 AFDianBot {user_id} 不存在，将尝试获取下一个 AFDianBot"
+            )
             continue
-        if not isinstance(afdian_bot, AFDianBot):
-            logger.warning(f"Bot {user_id} 不是爱发电Bot，继续寻找")
+
+        if not isinstance(afdian_bot, TokenBot):
+            logger.warning(f"Bot {user_id} 不是爱发电 TokenBot，继续寻找")
             continue
 
         logger.debug(
@@ -69,14 +76,16 @@ async def _(bot: Bot, event: GroupRequestEvent):
         )
 
         try:
-            order_response: OrderResponse = (
-                await afdian_bot.query_order_by_out_trade_no(out_trade_no=comment)
-            )  # type: ignore
-        except Exception as e:
-            logger.error(
-                f"查询用户 {event.user_id} 的订单 {comment} 失败，错误信息为：{e}"
+            order_response = await afdian_bot.query_order_by_out_trade_no(
+                out_trade_no=comment
             )
-            return
+        except ActionFailed as e:
+            logger.error(
+                f"查询用户 {event.user_id} 的订单 {comment} 出现异常，也可能该订单不属于当前Bot，将继续使用下一个作者的 user_id 进行查询，错误信息为：{e}"
+            )
+            continue
+
+        logger.debug(order_response)
 
         if order_response.ec != 200:
             logger.error(
@@ -87,7 +96,7 @@ async def _(bot: Bot, event: GroupRequestEvent):
         logger.debug(f"查询用户 {event.user_id} 的订单 {comment} 成功")
 
         if not order_response.data.list:
-            msg = f"检测到用户 {event.user_id} 的订单号已存在，但数据列表为空，忽略次事件，需要作者 {user_id[:5]}{'x' * 8} 自行处理"
+            msg = f"检测到用户 {event.user_id} 的订单号已存在，但数据列表为空，忽略此事件，需要作者 {user_id[:5]}{'x' * 8} 自行处理"
             logger.debug(msg)
             await bot.send_group_msg(group_id=event.group_id, message=msg)
             logger.debug(f"已将用户 {event.user_id} 通知发送至群聊 {event.group_id}")
@@ -106,6 +115,6 @@ async def _(bot: Bot, event: GroupRequestEvent):
 
     else:
         msg = f"用户 {event.user_id} 的订单号 {comment[:5]} 不属于群聊 {event.group_id} 的任何作者，已拒绝请求"
+        logger.warning(msg)
         await bot.send_group_msg(group_id=event.group_id, message=msg)
         await event.reject(bot, reason="订单号不属于群聊的作者")
-        logger.warning(msg)
