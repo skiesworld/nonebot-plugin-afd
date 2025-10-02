@@ -1,6 +1,6 @@
 [project]
 name = "nonebot-plugin-afd"
-version = "0.1.0"
+version = "0.1.1"
 description = "基于NoneBot2的爱发电订单审核进群插件"
 authors = [{ name = "17TheWord", email = "17theword@gmail.com" }]
 requires-python = ">=3.10, <4"
